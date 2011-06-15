@@ -1,0 +1,36 @@
+CODE COPY
+
+INTRODUCTION
+Code Copy is a simple puzzle game in lua using Love2D. You are represented with a block pattern at the start of each level, the goal is to reproduce the pattern in the level by firing a shot that will either set a block or remove a block.
+
+INSTALLATION INSTRUCTIONS (dingux)
+You will need the nLove framework for dingux. CodeCopy assumes that nlove is placed under /local/nlove. The CodeCopy.love package should be under /local/nlove/games.
+Create a bash script to load the game. If you place the nlove and the codecopy package as above then the bash script will be:
+
+'#!/bin/sh
+/boot/local/nlove/nlove.dge /boot/local/nlove/games/CodeCopy.love'
+
+If you are using gmenu2x this can be added as a link
+
+INSTALLATION INSTRUCTIONS (MAC, PCÉ)
+This has also been tested on a MAC using LOVE. Download and install LOVE then double click on CodeCopy.love to run
+
+INSTRUCTIONS
+D-pad to move left/right
+L fires a red shot
+R fires a yellow shot
+Y activates the topmost red shot and yellow shot
+START pauses the game and displays menu
+
+During the game firing a red shot and pressing Y will set the block below the shot. Firing a yellow shot and pressing Y will unset the block below the shot.
+A level is failed if it is not completed during the time limit
+
+PAUSE MENU
+Start button to select menu option
+
+HELP - displays the block pattern to match. This will be displayed for 5 seconds and this time will took from your time limit. Use sparingly
+INSTR - displays instructions in game
+RESET - resets the game to the start
+EXIT - exits the game
+
+

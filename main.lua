@@ -30,11 +30,21 @@ game.level = 0
 game.gameMode = {}
 game.game_timer = 0
 
+-- game mode
+gameMode = {}
+gameMode.pause    = -1
+gameMode.start    =  0
+gameMode.main     =  1 
+gameMode.editor   =  2
+gameMode.score    =  3
+gameMode.settings =  4
+
+-- ingame mode
 mainGameMode = {}
-mainGameMode.help 		= "help"
-mainGameMode.main 		= "main"
-mainGameMode.complete 	= "complete"
-mainGameMode.try 		= "try"
+mainGameMode.help 		= 1
+mainGameMode.main 		= 2
+mainGameMode.complete 	= 3
+mainGameMode.try 		= 4
 
 -- mode during game play
 game.gameMode.main_game_mode = mainGameMode.help
@@ -102,6 +112,9 @@ function love.load()
   
   font_data = love.image.newImageData("img/Fonts/font_red_small.png")
   font_red_small = dingoo_font.setFontImage(font_data, " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!?[]", 6, 2)
+
+  font_data = love.image.newImageData("img/Fonts/font_complete_small.png")
+  font_normal_small = dingoo_font.setFontImage(font_data, " ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!?[]", 6, 2)
 end
 
 ----------------------
@@ -109,14 +122,14 @@ end
 ----------------------
 
 function love.update(dt)
-  if (game.mode == -1) then
+  if (game.mode == gameMode.pause) then
     updatePause(dt)
-  elseif (game.mode == 0) then
+  elseif (game.mode == gameMode.start) then
     updateStart(dt)
-  elseif (game.mode == 1) then
+  elseif (game.mode == gameMode.main) then
     updateGame(dt)
-  elseif (game.mode == 2) then
-  	updatePause(dt)
+  elseif (game.mode == gameMode.settings) then
+    updateSettings()
   end
 end
 
@@ -133,6 +146,10 @@ end
 -- update pause values
 function updatePause(dt)
 
+end
+
+-- update the settings value
+function updateSettings(dt)
 end
 
 -- update main game methods
@@ -244,14 +261,14 @@ end
 --------------------
 
 function love.draw()
-  if (game.mode == -1) then
+  if (game.mode == gameMode.pause) then
     drawPause()
-  elseif (game.mode == 0) then
+  elseif (game.mode == gameMode.start) then
     drawStart()
-  elseif (game.mode == 1) then
+  elseif (game.mode == gameMode.main) then
     drawGame()
-  elseif (game.mode == 2) then
-  	drawPause()
+  elseif (game.mode == gameMode.settings) then
+    drawSettings()
   end
 end
 
@@ -260,9 +277,12 @@ function drawStart()
   love.graphics.clear()
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.draw(game.startMode.backGround, 0, 0, 0, 1, 1, 0)
+  
   if (game.startMode.show_start) then
     dingoo_font.dingPrint(font_normal, 'PRESS START', 75, 178)
   end
+  
+  dingoo_font.dingPrint(font_normal_small, 'OR SELECT FOR SETTINGS', 75, 220)
 end
 
 -- draw pause screen
@@ -290,6 +310,10 @@ function drawPause()
   elseif (game.pauseMode.choice == 4) then
   	love.graphics.rectangle('fill', 103, 178, 10, 10)
   end
+end
+
+-- draw settings screen
+function drawSettings()
 end
 
 -- draw main game screen
@@ -423,14 +447,14 @@ end
 -- for when using computer
 function love.keyreleased(key)
   -- start game
-  if (game.mode == 0) then
+  if (game.mode == gameMode.start) then
   	-- start the game
     startKeyReleased(key)
   -- game mode  
-  elseif (game.mode == 1) then
+  elseif (game.mode == gameMode.main) then
     gameKeyReleased(key)
   -- pause mode  
-  elseif (game.mode == 2) then
+  elseif (game.mode == gameMode.pause) then
    pauseKeyReleased(key)
   end
 end
@@ -438,7 +462,9 @@ end
 -- process key releases during the start screen
 function startKeyReleased(key)
   if (key == control.start) then
-    game.mode = 1
+    game.mode = gameMode.main
+  elseif (key == control.select) then
+    game.mode = gameMode.settings
   end
 end
 
@@ -455,7 +481,7 @@ function gameKeyReleased(key)
      fireTakeBlock()
   elseif (key == control.start) then
     -- pause the game
-    game.mode = 2
+    game.mode = gameMode.pause
   elseif (key == control.Y) then
     -- activate the top give shot
     if (table.getn(player.give_blocks) > 0) then
@@ -538,10 +564,10 @@ function pauseKeyReleased(key)
   if (key == control.start) then
     -- determine what to do
     if (game.pauseMode.choice == 0) then
-      game.mode = 1
+      game.mode = gameMode.main
     elseif (game.pauseMode.choice == 1) then
       -- want to return to the main game
-      game.mode = 1
+      game.mode = gameMode.main
       -- display the help screen for 5 seconds
       game.gameMode.help_timer = 0
       game.gameMode.main_game_mode = mainGameMode.help
@@ -564,7 +590,7 @@ end
 function love.joystickreleased(joystick, button)
   if (game.mode == 0) then
     if (button == control.start) then
-      game.mode = 1
+      game.mode = gameMode.main
     end
   end
 end
@@ -669,7 +695,7 @@ end
 
 -- reset the game to start
 function reset()
-  game.mode = 0
+  game.mode = gameMode.start
   game.level = 0
   game.startMode.timer = 0
   game.startMode.show_start = true

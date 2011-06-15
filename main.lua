@@ -26,7 +26,7 @@ game.startMode.timer = 0
 game.startMode.show_start = true
 
 -- game mode
-game.level = 4
+game.level = 0
 game.gameMode = {}
 game.game_timer = 0
 

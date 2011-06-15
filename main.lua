@@ -26,7 +26,7 @@ game.startMode.timer = 0
 game.startMode.show_start = true
 
 -- game mode
-game.level = 3 
+game.level = 4
 game.gameMode = {}
 game.game_timer = 0
 
@@ -315,6 +315,10 @@ function drawGameHelp()
     for j=1, 14 do
       if (levels.levels[game.level].maze[i*14+j] == 1) then
         love.graphics.draw(game.gameMode.normal_block, (j*20), (i*20)+20, 0, 1, 1, 0)
+      elseif (levels.levels[game.level].maze[i*14+j] == 2) then
+        love.graphics.draw(game.gameMode.green_block, (j*20), (i*20)+20, 0, 1, 1, 0)
+      elseif (levels.levels[game.level].maze[i*14+j] == 3) then
+        love.graphics.draw(game.gameMode.red_block, (j*20), (i*20)+20, 0, 1, 1, 0)
       end
     end
   end

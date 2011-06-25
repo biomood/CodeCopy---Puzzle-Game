@@ -1,20 +1,7 @@
 require "levels"
 require "dingoo_font"
 require "util"
-
--- define the controls for the dingoo
-control = {}
-control.up 		= "up"
-control.down 	= "down"
-control.left 	= "left"
-control.right 	= "right"
-control.L 		= "tab"
-control.R 		= "backspace"
-control.select 	= "escape"
-control.start 	= "return"
-control.Y 		= "lshift"
-control.B 		= "lalt"
-control.A 		= "lctrl"
+require "control_conf"
 
 game = {}
 game.mode = 0  -- 0=start,1=game,2=pause
@@ -32,12 +19,13 @@ game.game_timer = 0
 
 -- game mode
 gameMode = {}
-gameMode.pause    = -1
-gameMode.start    =  0
-gameMode.main     =  1 
-gameMode.editor   =  2
-gameMode.score    =  3
-gameMode.settings =  4
+gameMode.pause       = -1
+gameMode.start       = 0
+gameMode.main        = 1 
+gameMode.editor      = 2
+gameMode.score       = 3
+gameMode.settings 	 = 4
+gameMode.leveleditor = 5
 
 -- ingame mode
 mainGameMode = {}
@@ -74,6 +62,11 @@ game.gameMode.red_block_inv    = love.graphics.newImage("img/Box/red_inv.png")
 -- pause mode
 game.pauseMode = {}
 game.pauseMode.choice = 0 -- 0=pause, 1=help, 2=instr, 3=reset, 4=exit
+
+-- settings mode
+game.settingsMode = {}
+game.settingsMode.choice = 0
+
 
 -- player
 player = {}
@@ -129,7 +122,9 @@ function love.update(dt)
   elseif (game.mode == gameMode.main) then
     updateGame(dt)
   elseif (game.mode == gameMode.settings) then
-    updateSettings()
+    updateSettings(dt)
+  elseif (game.mode == gameMode.leveleditor) then
+  	leveleditor.update(dt)
   end
 end
 
@@ -269,6 +264,8 @@ function love.draw()
     drawGame()
   elseif (game.mode == gameMode.settings) then
     drawSettings()
+  elseif (game.mode == gameMode.leveleditor) then
+  	leveleditor.draw();
   end
 end
 
@@ -287,7 +284,6 @@ end
 
 -- draw pause screen
 function drawPause()
-  -- love.graphics.clear()
   love.graphics.setColor(255, 255, 255, 255)
   love.graphics.rectangle("fill", 90, 20, 140, 200)
   dingoo_font.dingPrint(font_normal, 'PAUSE', 123, 35)
@@ -314,6 +310,28 @@ end
 
 -- draw settings screen
 function drawSettings()
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.rectangle("fill", 90, 20, 140, 200)
+  dingoo_font.dingPrint(font_normal, 'EDITOR', 123, 35)
+  dingoo_font.dingPrint(font_normal, 'SCORE', 123, 69)
+  dingoo_font.dingPrint(font_normal, 'INSTR', 123, 103)
+  dingoo_font.dingPrint(font_normal, 'RETURN', 123, 137)
+  dingoo_font.dingPrint(font_normal, 'EXIT', 123, 171)
+  
+  -- draw the select key
+  love.graphics.setColor(0, 0, 0, 255)
+  
+  if (game.settingsMode.choice == 0) then
+    love.graphics.rectangle('fill', 103, 42, 10, 10)
+  elseif (game.settingsMode.choice == 1) then
+    love.graphics.rectangle('fill', 103, 76, 10, 10)
+  elseif (game.settingsMode.choice == 2) then
+    love.graphics.rectangle('fill', 103, 110, 10, 10)
+  elseif (game.settingsMode.choice == 3) then
+  	love.graphics.rectangle('fill', 103, 144, 10, 10)
+  elseif (game.settingsMode.choice == 4) then
+  	love.graphics.rectangle('fill', 103, 178, 10, 10)
+  end
 end
 
 -- draw main game screen
@@ -455,7 +473,12 @@ function love.keyreleased(key)
     gameKeyReleased(key)
   -- pause mode  
   elseif (game.mode == gameMode.pause) then
-   pauseKeyReleased(key)
+    pauseKeyReleased(key)
+  -- settings mode
+  elseif (game.mode == gameMode.settings) then
+    settingsKeyReleased(key)
+  elseif (game.mode == gameMode.leveleditor) then
+    leveleditor.keyreleased(key)
   end
 end
 
@@ -562,17 +585,11 @@ function pauseKeyReleased(key)
   end
   -- start, select menu option
   if (key == control.start) then
-    -- determine what to do
     if (game.pauseMode.choice == 0) then
+      -- return to the main game
       game.mode = gameMode.main
     elseif (game.pauseMode.choice == 1) then
-      -- want to return to the main game
-      game.mode = gameMode.main
-      -- display the help screen for 5 seconds
-      game.gameMode.help_timer = 0
-      game.gameMode.main_game_mode = mainGameMode.help
-
-      levels.levels[game.level].timer_max = levels.levels[game.level].timer_max - 5
+      help()
     elseif (game.pauseMode.choice == 2) then
     elseif (game.pauseMode.choice == 3) then
      reset()
@@ -584,6 +601,30 @@ function pauseKeyReleased(key)
   if (key == control.B) then
     game.mode = 1
   end
+end
+
+-- process key releases during the settings screen
+function settingsKeyReleased(key)
+  if (key == control.up) then
+    if (game.settingsMode.choice == 0) then
+      return;
+    else
+      game.settingsMode.choice = game.settingsMode.choice - 1
+    end
+  elseif (key == control.down) then
+    if (game.settingsMode.choice == 4) then
+      return;
+    else
+      game.settingsMode.choice = game.settingsMode.choice + 1
+    end
+  end
+  
+  if (key == control.start) then
+    if (game.settingsMode.choice == 0) then
+      game.mode = gameMode.leveleditor
+    end
+  end
+  
 end
 
 -- dingoo controls
@@ -738,6 +779,15 @@ function retryLevel()
   levels.levels[game.level].timer_max = levels.levels[game.level].reset_timer
 end
 
+function help()
+  -- want to return to the main game
+  game.mode = gameMode.main
+  -- display the help screen for 5 seconds
+  game.gameMode.help_timer = 0
+  game.gameMode.main_game_mode = mainGameMode.help
+
+  levels.levels[game.level].timer_max = levels.levels[game.level].timer_max - 5
+end
 
 ----------------------
 -- useful functions --

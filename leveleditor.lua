@@ -1,35 +1,50 @@
-module(..., package.seeall);
+
+
+
+local levelEditMode = {
+	pattern  = 1,
+	starting = 2
+}
+local editorChoice = levelEditMode.pattern
 
 -----------------------------------
 -- Level editor update functions --
 -----------------------------------
 
+local function update(dt)
+end 
+
 -- update the editor
-function updateLevelEditor(dt)
+local function updateLevelEditor(dt)
 end
 
 -- update the level menu
-function updateLevelMenu(dt)
+local function updateLevelSelect(dt)
 end
 
+
+
 -- update the current user level in play
-function updateUserLevel()
+local function updateUserLevel()
 end
 
 ---------------------------------
 -- Level editor draw functions --
 ---------------------------------
 
+local function draw()
+end
+
 -- draw the level editor
-function drawLevelEditor()
+local function drawLevelEditor()
 end
 
 -- draw the select menu level
-function drawLevelMenu()
+local function drawLevelSelect()
 end
 
 -- draw the user level in play
-function drawUserLevel()
+local function drawUserLevel()
 end
 
 --------------------------
@@ -37,13 +52,28 @@ end
 --------------------------
 
 -- save the current level in editor with level name
-function saveLevel(levelName)
+local function saveLevel(levelName)
 end
 
 -- load the level with given level name
-function loadLevel(levelName)
+local function loadLevel(levelName)
 end
 
 -- return a list of all user created levels
-function getAllLevels()
+local function getAllLevels()
 end
+
+-------------------------------------
+-- level editor keyboard functions --
+-------------------------------------
+
+function keyReleased(key)
+end
+
+
+-- package
+leveleditor = {
+	draw = draw,
+	update = update
+	
+}

@@ -1,11 +1,28 @@
+require "menu"
 
+-- menu select
+local editorMode = {
+	menu 	  = 1,
+	editor 	  = 2,
+	select 	  = 3,
+	userLevel = 4
+}
+local editorMode = editorMode.menu
 
-
-local levelEditMode = {
+-- in editor
+local inEditMode = {
 	pattern  = 1,
 	starting = 2
 }
-local editorChoice = levelEditMode.pattern
+local inEditChoice = inEditMode.pattern
+
+-- menu for the editor 
+local menu = menu.createMenu({"NEW", "PLAY", "EDIT", "BACK"})
+
+local function initLevelEditor()
+  
+end
+
 
 -----------------------------------
 -- Level editor update functions --
@@ -14,6 +31,10 @@ local editorChoice = levelEditMode.pattern
 local function update(dt)
 end 
 
+-- update the menu
+local function updateMenu(dt)
+end
+
 -- update the editor
 local function updateLevelEditor(dt)
 end
@@ -21,8 +42,6 @@ end
 -- update the level menu
 local function updateLevelSelect(dt)
 end
-
-
 
 -- update the current user level in play
 local function updateUserLevel()
@@ -33,6 +52,10 @@ end
 ---------------------------------
 
 local function draw()
+end
+
+-- draw the menu 
+local function drawMenu()
 end
 
 -- draw the level editor
@@ -67,13 +90,13 @@ end
 -- level editor keyboard functions --
 -------------------------------------
 
-function keyReleased(key)
+local function keyReleased(key)
 end
 
 
 -- package
 leveleditor = {
 	draw = draw,
-	update = update
-	
+	update = update,
+	keyReleased = keyReleased
 }

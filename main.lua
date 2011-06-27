@@ -2,6 +2,7 @@ require "levels"
 require "dingoo_font"
 require "util"
 require "control_conf"
+require "leveleditor"
 
 game = {}
 game.mode = 0  -- 0=start,1=game,2=pause

@@ -7,7 +7,7 @@ local editorMode = {
 	select 	  = 3,
 	userLevel = 4
 }
-local editorMode = editorMode.menu
+local editorModeChoice = editorMode.menu
 
 -- in editor
 local inEditMode = {
@@ -28,9 +28,6 @@ end
 -- Level editor update functions --
 -----------------------------------
 
-local function update(dt)
-end 
-
 -- update the menu
 local function updateMenu(dt)
 end
@@ -47,15 +44,29 @@ end
 local function updateUserLevel()
 end
 
+-- general update function
+local function update(dt)
+  if (editorModeChoice == editorMode.menu) then
+    updateMenu(dt)
+  elseif (editorModeChoice == editorMode.editor) then
+  elseif (editorModeChoice == editorMode.select) then
+  elseif (editorModeChoice == editorMode.userLevel) then
+  end
+end 
+
+
 ---------------------------------
 -- Level editor draw functions --
 ---------------------------------
 
-local function draw()
-end
-
 -- draw the menu 
 local function drawMenu()
+  love.graphics.setColor(255, 255, 255, 255)
+  love.graphics.rectangle("fill", 90, 20, 140, 200)
+  dingoo_font.dingPrint(font_normal, 'NEW', 123, 35)
+  dingoo_font.dingPrint(font_normal, 'PLAY', 123, 69)
+  dingoo_font.dingPrint(font_normal, 'EDIT', 123, 103)
+  dingoo_font.dingPrint(font_normal, 'BACK', 123, 137)
 end
 
 -- draw the level editor
@@ -68,6 +79,16 @@ end
 
 -- draw the user level in play
 local function drawUserLevel()
+end
+
+-- general draw function
+local function draw()
+  if (editorModeChoice == editorMode.menu) then
+    drawMenu()
+  elseif (editorModeChoice == editorMode.editor) then
+  elseif (editorModeChoice == editorMode.select) then
+  elseif (editorModeChoice == editorMode.userLevel) then
+  end
 end
 
 --------------------------

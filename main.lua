@@ -479,7 +479,7 @@ function love.keyreleased(key)
   elseif (game.mode == gameMode.settings) then
     settingsKeyReleased(key)
   elseif (game.mode == gameMode.leveleditor) then
-    leveleditor.keyreleased(key)
+    leveleditor.keyReleased(key)
   end
 end
 
